@@ -1,1 +1,1 @@
-# ShengJiAI
+# Reinforcement Learning for Sheng Ji
