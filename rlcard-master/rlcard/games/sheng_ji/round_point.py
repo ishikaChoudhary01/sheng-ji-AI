@@ -5,6 +5,6 @@ class ShengJiPointRound():
         self.level = level
         self.trump_suit = trump_suit
         self.current_player = starting_player
+        self.hand_winner = None
         self.points_played = 0
-
-        
+   
