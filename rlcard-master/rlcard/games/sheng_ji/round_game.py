@@ -6,9 +6,9 @@ class ShengJiGameRound():
         self.level = dealer_level
         self.trump_suit = trump_suit
         self.starting_player = starting_player
-        self.winning_player = None
         self.final_hand_winner = None
         self.total_offensive_points = 0
+        self.did_dealers_win = False
         
         if not starting_player.is_dealer:
             for player in players:
