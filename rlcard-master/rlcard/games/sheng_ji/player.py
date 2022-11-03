@@ -1,13 +1,13 @@
 
 class ShengJiPlayer:
 
-    def __init__(self, player_index, teammate_index):
+    def __init__(self, player_index, teammate_index, level, trump_suit):
         self.player_index = player_index
         self.hand = []
-        self.role = None
+        self.is_dealer = False
         self.teammate = teammate_index
-        self.level = 2
-        self.trump_suit = 'S'
+        self.level = level
+        self.trump_suit = trump_suit
 
     def get_player_index(self):
         return self.player_index
@@ -15,8 +15,11 @@ class ShengJiPlayer:
     def level_up(self, num_levels):
         self.level += num_levels
 
-    def set_role(self, role):
-        self.role = role
+    def set_role(self, is_dealer):
+        self.role = is_dealer
+
+    def switch_role(self):
+        self.is_dealer = not self.is_dealer
 
     def set_hand(self, new_hand):
         self.hand = new_hand
