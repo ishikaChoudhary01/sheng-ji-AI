@@ -9,6 +9,9 @@ class ShengJiPlayer:
         self.level = 2
         self.trump_suit = 'S'
 
+    def get_player_index(self):
+        return self.player_index
+
     def level_up(self, num_levels):
         self.level += num_levels
 
