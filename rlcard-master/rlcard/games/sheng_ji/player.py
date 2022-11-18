@@ -10,6 +10,7 @@ class ShengJiPlayer:
         self.trump_suit = trump_suit
         self.seen_cards = []
 
+
     def get_state(self):
         state = {}
         state['hand'] = self.hand

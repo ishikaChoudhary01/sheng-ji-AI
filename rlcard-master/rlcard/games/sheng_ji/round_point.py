@@ -12,11 +12,18 @@ class ShengJiPointRound():
         self.hand_winner = None
         self.cards_played = [None, None, None, None]
         self.round_over = False
+        # points currently out on the board
+        self.points = 0
 
     def proceed_round(self, action, players):
         if not self.first_play:
             self.starting_suit = action.suit
             self.first_play = False
+         # updating points
+        if action.rank == '5':
+            self.points += 5
+        if action.rank == '10' or action.rank == 'K':
+            self.points += 10
 
         # getting the current player
         curr = players[self.current_player]
@@ -49,6 +56,12 @@ class ShengJiPointRound():
                 if card.rank > winning_card.rank:
                     winner = i
         return winner
+
+    def get_points(self):
+        return self.points
+
+    def is_over(self):
+        return self.round_over
 
 
    
