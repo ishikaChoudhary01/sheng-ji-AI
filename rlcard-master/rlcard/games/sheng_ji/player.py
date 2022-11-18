@@ -8,6 +8,13 @@ class ShengJiPlayer:
         self.teammate = teammate_index
         self.level = level
         self.trump_suit = trump_suit
+        self.seen_cards = []
+
+    def get_state(self):
+        state = {}
+        state['hand'] = self.hand
+        state['seen_cards'] = self.seen_cards
+        return state
 
     def get_player_index(self):
         return self.player_index
@@ -26,7 +33,11 @@ class ShengJiPlayer:
 
     def play(self, card):
         self.hand.remove(card)
-        #TODO: what to return here?? if anything? add card to state?
+        self.seen_cards[self.player_index] = card
+
+    # Adds new observed card to this player's seen card (not for when the player plays their own card)
+    def add_seen_card(self, card, player_index):
+        self.seen_cards[player_index] = card
 
     def available_actions(self, suit_in_play, current_level):
         possible_plays = [card for card in self.hand if card.suit == suit_in_play and card.rank != current_level]
@@ -35,5 +46,4 @@ class ShengJiPlayer:
             return self.hand
         else:
             return possible_plays
-
 

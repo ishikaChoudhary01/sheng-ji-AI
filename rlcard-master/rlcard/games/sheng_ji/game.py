@@ -22,6 +22,15 @@ class ShengJiGame:
         self.level = Level.TWO
         self.dealer = 0
 
+    def step(self, action):
+        return None
+
+    def get_state(self, player_id):
+        return self.players[player_id].get_state()
+
+
+
+
 
 
 
