@@ -2,6 +2,7 @@
 from .player import ShengJiPlayer as Player
 from .level import Level
 from .role import Role
+from .round_game import ShengJiGameRound
 
 class ShengJiGame:
 
@@ -21,9 +22,17 @@ class ShengJiGame:
 
         self.level = Level.TWO
         self.dealer = 0
+        # TODO what should starting trump suit be
+        self.game_round = ShengJiGameRound(self.players, self.level, 'A', 0)
 
     def step(self, action):
-        return None
+        self.game_round.proceed_round(action)
+        if self.game_round.is_over:
+            round_results = self.game_round.find_winners()
+            # TODO what level rules change
+            # TODO who starts next
+            self.game_round = ShengJiGameRound(self.players, self.level, 'A', 0)
+
 
     def get_state(self, player_id):
         return self.players[player_id].get_state()
