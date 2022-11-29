@@ -1,5 +1,6 @@
-from functools import reduce
+from .judger import ShengJiJudger
 
+# Represents one round where each player plays one card
 class ShengJiPointRound():
 
     def __init__(self, level, trump_suit, starting_player):
@@ -7,6 +8,7 @@ class ShengJiPointRound():
         self.starting_suit = None
         self.first_play = True
         self.trump_suit = trump_suit
+        self.starting_player = starting_player
         # current player index
         self.current_player = starting_player
         self.hand_winner = None
@@ -14,48 +16,29 @@ class ShengJiPointRound():
         self.round_over = False
         # points currently out on the board
         self.points = 0
+        # TODO should we change this?
+        self.judger = ShengJiJudger(42)
 
     def proceed_round(self, action, players):
-        if not self.first_play:
+        if self.first_play:
             self.starting_suit = action.suit
             self.first_play = False
-         # updating points
+        # updating points
         if action.rank == '5':
             self.points += 5
         if action.rank == '10' or action.rank == 'K':
             self.points += 10
-
         # getting the current player
         curr = players[self.current_player]
         # player plays card
         curr.play(action)
         self.cards_played[self.current_player] = action
-        # update the other players' states with the new seen card
-        # TODO: potentially just store the seen cards in the game itself because it's the same for all players
-        for p in players:
-            if p.get_player_index != self.current_player:
-                p.add_seen_card(action, self.current_player)
-        self.round_over
-        self.round_over = reduce(lambda a,b: a is not None and b is not None, self.cards_played)
+        self.round_over = True if self.current_player == (self.starting_player - 1) % 4 else False
         if self.round_over:
-            self.hand_winner = self.find_winner()
-
-    # returns the player index of the winning player for this round
-    # TODO implement a better way to compare cards
-    def find_winner(self):
-        winner = 0
-        winning_card = self.cards_played[0]
-        for i in range(4):
-            card = self.cards_played[i]
-            if card.suit == self.starting_suit and winning_card.suit == self.starting_suit:
-                if card.rank > winning_card.rank:
-                    winner = i
-            if card.suit == self.trump_suit and winning_card.suit == self.starting_suit:
-                winner = i
-            if card.suit == self.trump_suit and winning_card.suit == self.trump_suit:
-                if card.rank > winning_card.rank:
-                    winner = i
-        return winner
+            self.hand_winner = self.judger.find_winner(self.cards_played, self.starting_player, self.trump_suit)
+        else:
+            # setting current player to next player
+            self.current_player = (self.current_player + 1) % 4
 
     def get_points(self):
         return self.points
@@ -63,5 +46,5 @@ class ShengJiPointRound():
     def is_over(self):
         return self.round_over
 
-
-   
+    def get_state(self):
+        return self.cards_played

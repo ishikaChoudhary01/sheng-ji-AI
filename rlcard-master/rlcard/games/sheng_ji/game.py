@@ -16,9 +16,7 @@ class ShengJiGame:
             newPlayer = Player(i, (i + 2) % 4)
             self.players.append(newPlayer)
             if i % 2 == 0:
-                newPlayer.set_role(Role.DEALER)
-            else:
-                newPlayer.set_role(Role.OFFENSE)
+                newPlayer.set_is_dealer(True)
 
         self.level = Level.TWO
         self.dealer = 0
@@ -33,9 +31,10 @@ class ShengJiGame:
             # TODO who starts next
             self.game_round = ShengJiGameRound(self.players, self.level, 'A', 0)
 
-
     def get_state(self, player_id):
-        return self.players[player_id].get_state()
+        state = self.players[player_id].get_state()
+        state["seen_cards"] = self.game_round.get_state()
+        return state
 
 
 

@@ -31,67 +31,49 @@ class ShengJiJudger:
         assert sum(payoffs) == 0
         return payoffs
 
-    def split_pot_among_players(self, in_chips, winners):
-        """
-        Splits the next (side) pot among players.
-        Function is called in loop by distribute_pots_among_players until all chips are allocated.
+    def find_point_round_winner(self, cards_played, starting_player, trump_suit):
+        winner_index = starting_player
+        winning_card = cards_played[starting_player]
+        starting_suit = cards_played[starting_player].suit
 
-        Args:
-            in_chips (list): List with number of chips bet not yet distributed for each player
-            winners (list): List with 1 if the player is among winners else 0
+        for i in range(4):
+            curr_player = starting_player + i % 4
+            card = cards_played[curr_player]
+            # if highest card and current card both starting suit -> compare rank
+            if card.suit == starting_suit and winning_card.suit == starting_suit:
+                if card.rank > winning_card.rank:
+                    winner_index = curr_player
+                    winning_card = cards_played[curr_player]
 
-        Returns:
-            (list): Of how much chips each player get after this pot has been split and list of chips left to distribute
-        """
-        nb_winners_in_pot = sum((winners[i] and in_chips[i] > 0) for i in range(len(in_chips)))
-        nb_players_in_pot = sum(in_chips[i] > 0 for i in range(len(in_chips)))
-        if nb_winners_in_pot == 0 or nb_winners_in_pot == nb_players_in_pot:
-            # no winner or all winners for this pot
-            allocated = list(in_chips)  # we give back their chips to each players in this pot
-            in_chips_after = len(in_chips) * [0]  # no more chips to distribute
+            # if highest card starting suit but this card trump suit -> this card is new highest
+            if card.suit == trump_suit and winning_card.suit == starting_suit:
+                winner_index = curr_player
+                winning_card = cards_played[curr_player]
+
+            # if highest card and current card both trump suit -> compare rank
+            if card.suit == trump_suit and winning_card.suit == trump_suit:
+                if card.rank > winning_card.rank:
+                    winner_index = curr_player
+                    winning_card = cards_played[curr_player]
+
+        return winner_index
+
+    def find_game_round_winners(self, players, total_offensive_points):
+        winners = []
+        # if offense won
+        if self.total_offensive_points >= 40:
+            levels = 2 if total_offensive_points >= 120 else 1
+            for p in players:
+                if not p.is_dealer:
+                    p.level_up(levels)
+                    winners.append(p)
+                p.switch_role()
+        # if dealers won
         else:
-            amount_in_pot_by_player = min(v for v in in_chips if v > 0)
-            how_much_one_win, remaining = divmod(amount_in_pot_by_player * nb_players_in_pot, nb_winners_in_pot)
-            '''
-            In the event of a split pot that cannot be divided equally for every winner, the winner who is sitting 
-            closest to the left of the dealer receives the remaining differential in chips cf 
-            https://www.betclic.fr/poker/house-rules--play-safely--betclic-poker-cpok_rules to simplify and as this 
-            case is very rare, we will give the remaining differential in chips to a random winner
-            '''
-            allocated = len(in_chips) * [0]
-            in_chips_after = list(in_chips)
-            for i in range(len(in_chips)):  # iterate on all players
-                if in_chips[i] == 0:  # player not in pot
-                    continue
-                if winners[i]:
-                    allocated[i] += how_much_one_win
-                in_chips_after[i] -= amount_in_pot_by_player
-            if remaining > 0:
-                random_winning_player = self.np_random.choice(
-                    [i for i in range(len(winners)) if winners[i] and in_chips[i] > 0])
-                allocated[random_winning_player] += remaining
-        assert sum(in_chips[i] - in_chips_after[i] for i in range(len(in_chips))) == sum(allocated)
-        return allocated, in_chips_after
+            levels = 2 if total_offensive_points == 0 else 1
+            for p in players:
+                if p.is_dealer:
+                    p.level_up(levels)
+                    winners.append(p)
 
-    def split_pots_among_players(self, in_chips_initial, winners):
-        """
-        Splits main pot and side pots among players (to handle special case of all-in players).
-
-        Args:
-            in_chips_initial (list): List with number of chips bet for each player
-            winners (list): List with 1 if the player is among winners else 0
-
-        Returns:
-            (list): List of how much chips each player get back after all pots have been split
-        """
-        in_chips = list(in_chips_initial)
-        assert len(in_chips) == len(winners)
-        assert all(v == 0 or v == 1 for v in winners)
-        assert sum(winners) >= 1  # there must be at least one winner
-        allocated = np.zeros(len(in_chips), dtype=int)
-        while any(v > 0 for v in in_chips):  # while there are still chips to allocate
-            allocated_current_pot, in_chips = self.split_pot_among_players(in_chips, winners)
-            allocated += allocated_current_pot  # element-wise addition
-        assert all(chips >= 0 for chips in allocated)  # check that all players got a non negative amount of chips
-        assert sum(in_chips_initial) == sum(allocated)  # check that all chips bet have been allocated
-        return list(allocated)
+        return winners

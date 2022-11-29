@@ -129,7 +129,7 @@ class DoudizhuGame:
 
     @staticmethod
     def get_num_actions():
-        ''' Return the total number of abstract acitons
+        ''' Return the total number of abstract actions
 
         Returns:
             int: the total number of abstract actions of doudizhu

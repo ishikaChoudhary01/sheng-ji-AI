@@ -1,5 +1,6 @@
 
 from .round_point import ShengJiPointRound
+from .judger import ShengJiJudger
 
 class ShengJiGameRound():
 
@@ -9,47 +10,34 @@ class ShengJiGameRound():
         self.level = dealer_level
         self.trump_suit = trump_suit
         self.starting_player = starting_player
-        self.final_hand_winner = None
         self.total_offensive_points = 0
-        self.did_dealers_win = False
-        self.cards_left_to_play = 26
+        self.cards_left_to_play = 104
         self.is_over = False
-        
-        if not starting_player.is_dealer:
-            for player in players:
-                player.switch_teams()
+        # TODO random seed?
+        self.judger = ShengJiJudger(42)
 
     def proceed_round(self, action):
         self.point_round.proceed_round(action, self.players)
-        # checking if the round ends after this play
+        self.cards_left_to_play -= 1
+        # checking if the point round ends after this play
         if self.point_round.is_over():
             winning_player = self.point_round.find_winner()
-            # TODO change to check if teammate of offense
+            # is the winning player an offensive player?
             if not self.players[winning_player].is_dealer:
                 self.total_offensive_points += self.point_round.get_points()
             # reset point round, next starting player is winning player
             self.point_round = ShengJiPointRound(self.level, self.trump_suit, winning_player)
-            self.cards_left_to_play -= 1
         # check if this game round is over
         if self.cards_left_to_play == 0:
             self.is_over = True
-            # TODO check what number this should be
-            if self.total_offensive_points < 50:
-                self.did_dealers_win = True
 
-    def find_winners(self):
-        winners = []
-        for p in self.players:
-            if self.did_dealers_win:
-                if p.is_dealer:
-                    winners.append(p)
-            else:
-                if not p.is_dealer:
-                    winners.append(p)
+    def get_winners(self):
+        return self.judger.find_game_round_winners(self.players, self.total_offensive_points)
 
-        winner_score = 200 - self.total_offensive_points if self.did_dealers_win else self.total_offensive_points
+    def get_state(self):
+        return self.point_round.get_state()
 
-        return self.did_dealers_win, winners, winner_score
+
 
 
 

@@ -27,7 +27,7 @@ class ShengJiDealer:
         Args:
             players (list): list of Sheng Ji Player objects
         '''
-        # deal out everything except the last five cards for the bottom pile
-        playable_len = len(self.deck) - 5
+        # not doing bottom pile!
+        playable_len = len(self.deck)
         for player in players:
             player.set_hand(self.deck[player.get_player_index(): playable_len:4])
