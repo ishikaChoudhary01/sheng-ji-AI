@@ -37,6 +37,9 @@ class ShengJiGameRound():
     def get_state(self):
         return self.point_round.get_state()
 
+    def get_next_player(self):
+        return self.point_round.current_player
+
 
 
 

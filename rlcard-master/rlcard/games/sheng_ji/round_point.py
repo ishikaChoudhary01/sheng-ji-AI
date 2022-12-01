@@ -48,3 +48,5 @@ class ShengJiPointRound():
 
     def get_state(self):
         return self.cards_played
+
+

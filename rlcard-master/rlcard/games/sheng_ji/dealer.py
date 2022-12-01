@@ -4,7 +4,7 @@ import functools
 
 from rlcard.utils import init_54_deck
 
-class ShengJiDealer:
+class ShengJiCardDealer:
     ''' Dealer will shuffle, deal cards, and determine players' roles
     '''
     def __init__(self, np_random):
