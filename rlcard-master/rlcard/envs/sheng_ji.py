@@ -1,4 +1,5 @@
 from rlcard.envs import Env
+from rlcard.games.sheng_ji import ShengJiGame
 
 
 class ShengJiEnv(Env):
