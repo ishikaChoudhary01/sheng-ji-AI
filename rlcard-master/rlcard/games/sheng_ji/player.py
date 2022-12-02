@@ -13,6 +13,7 @@ class ShengJiPlayer:
     def get_state(self):
         state = {}
         state['hand'] = self.hand
+        state['level'] = self.level
         return state
 
     def get_player_index(self):

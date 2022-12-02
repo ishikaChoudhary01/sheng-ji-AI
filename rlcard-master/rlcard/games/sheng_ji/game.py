@@ -31,7 +31,9 @@ class ShengJiGame:
         self.game_round.proceed_round(action)
         if self.game_round.is_over:
             self.game_round.find_winners()
-            if not self.is_game_over():
+            if self.is_game_over():
+                self.winner_ids = self.judger.judge_game()
+            else:
                 self.dealer = self.find_dealers()
                 self.game_round = ShengJiGameRound(self.players, self.next_round_level, self.trump_suit, self.dealer)
         next_player = self.game_round.get_next_player()
@@ -52,10 +54,19 @@ class ShengJiGame:
 
     def is_game_over(self):
         for p in self.players:
-            if p.level == 14:
+            if p.level > 13:
                 self.is_over = True
                 return True
         return False
+
+    def get_payoffs(self):
+        payoffs = []
+        for i in range(4):
+            if i in self.winner_ids:
+                payoffs[i] = 1
+            else:
+                payoffs[i] = -1
+        return payoffs
 
 
 

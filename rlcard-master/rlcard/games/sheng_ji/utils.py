@@ -14,4 +14,6 @@ def cards2str(cards):
         else:
             response += card.rank
     return response
+
+
     
