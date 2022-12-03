@@ -14,7 +14,7 @@ class ShengJiGame:
         self.winner_ids = []
         self.players = []
         for i in range(self.num_players):
-            newPlayer = Player(i, (i + 2) % 4)
+            newPlayer = Player(i, (i + 2) % 4, 2)
             self.players.append(newPlayer)
             if i % 2 == 0:
                 newPlayer.set_is_dealer(True)
@@ -30,7 +30,8 @@ class ShengJiGame:
     def step(self, action):
         self.game_round.proceed_round(action)
         if self.game_round.is_over:
-            self.game_round.find_winners()
+            winners = self.game_round.find_winners()
+            self.next_round_level = winners[0].level # update next game round level using level of winners
             if self.is_game_over():
                 self.winner_ids = self.judger.judge_game()
             else:

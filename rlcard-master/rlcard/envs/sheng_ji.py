@@ -39,7 +39,12 @@ class ShengJiEnv(Env):
 
     def extract_legal_actions(self):
         # ENDED HERE
+        curr_game_round = self.game.game_round
+        legal_actions = curr_game_round.point_round.current_player.get_legal_actions(curr_game_round.trump_suit, curr_game_round.point_round.suit_in_play, game_round.level)
+        if legal_actions:
+
         raise NotImplementedError
+
 
     def extract_obs(self, state):
         def card_array_to_number(cards):
@@ -60,6 +65,7 @@ class ShengJiEnv(Env):
         seen_cards = state['seen_cards']
         return card_array_to_number(hand).append(level).extend(card_array_to_number(seen_cards))
 
+
     def _decode_action(self, action_id):
         ''' Decode Action id to the action in the game.
 
@@ -72,6 +78,7 @@ class ShengJiEnv(Env):
         '''
         raise NotImplementedError
 
+
     def _get_legal_actions(self):
         ''' Get all legal actions for current state.
 
@@ -79,4 +86,6 @@ class ShengJiEnv(Env):
             (list): A list of legal actions' id.
 
         '''
-        raise NotImplementedError
+        curr_game_round = self.game.game_round
+        legal_actions = curr_game_round.point_round.current_player.get_legal_actions(curr_game_round.trump_suit, curr_game_round.point_round.suit_in_play, game_round.level)
+        #if legal_actions:

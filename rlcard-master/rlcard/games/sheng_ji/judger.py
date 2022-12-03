@@ -11,7 +11,7 @@ class ShengJiJudger:
     def judge_game(self, players):
         return [p for p in players if p.level > 13]
 
-    def find_point_round_winner(self, cards_played, starting_player, trump_suit):
+    def find_point_round_winner(self, cards_played, starting_player, trump_suit, current_level):
         winner_index = starting_player
         winning_card = cards_played[starting_player]
         winning_card_value = self.rank2number[winning_card.suit] if winning_card.suit == 'BJ' or winning_card.suit == 'RJ' \
@@ -33,18 +33,12 @@ class ShengJiJudger:
                         winning_card.suit] if winning_card.suit == 'BJ' or winning_card.suit == 'RJ' \
                         else self.rank2number[winning_card.rank]
 
-            # if highest card starting suit but this card trump suit -> this card is new highest
-            if (card.suit == trump_suit or card.suit == "RJ" or card.suit == "BJ") and winning_card.suit == starting_suit:
-                winner_index = curr_player
-                winning_card = cards_played[curr_player]
-                winning_card_value = self.rank2number[
-                    winning_card.suit] if winning_card.suit == 'BJ' or winning_card.suit == 'RJ' \
-                    else self.rank2number[winning_card.rank]
-
-            # if highest card and current card both trump suit -> compare rank
-            if (card.suit == trump_suit or card.suit == "RJ" or card.suit == "BJ") \
-                    and (winning_card.suit == trump_suit or winning_card.suit == "RJ" or winning_card.suit == "BJ"):
-                if card.rank > winning_card.rank:
+            # if played card is trump suit
+            if (card.suit == trump_suit or card.suit == "RJ" or card.suit == "BJ" or card.rank == current_level):
+                # winning card is not trump suit # OR both played and winning card are trump suit, so compare rank
+                if (winning_card.suit == starting_suit) or \
+                    (winning_card.suit == trump_suit or winning_card.suit == "RJ" 
+                    or winning_card.suit == "BJ" or winning_card.rank == current_level) and card.rank > winning_card.rank:
                     winner_index = curr_player
                     winning_card = cards_played[curr_player]
                     winning_card_value = self.rank2number[

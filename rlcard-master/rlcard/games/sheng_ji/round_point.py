@@ -35,7 +35,7 @@ class ShengJiPointRound():
         self.cards_played[self.current_player] = action
         self.round_over = True if self.current_player == (self.starting_player - 1) % 4 else False
         if self.round_over:
-            self.hand_winner = self.judger.find_point_round_winner(self.cards_played, self.starting_player, self.trump_suit)
+            self.hand_winner = self.judger.find_point_round_winner(self.cards_played, self.starting_player, self.trump_suit, self.level)
         else:
             # setting current player to next player
             self.current_player = (self.current_player + 1) % 4
