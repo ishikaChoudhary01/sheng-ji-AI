@@ -6,7 +6,7 @@ from rlcard.utils import init_54_deck
 class ShengJiEnv(Env):
 
     def __init__(self):
-        self.name = "sheng ji"
+        self.name = 'sheng-ji'
         self.game = ShengJiGame()
         super().__init__(config)
         # hand, cards on table, level
@@ -38,12 +38,9 @@ class ShengJiEnv(Env):
 
 
     def extract_legal_actions(self):
-        # ENDED HERE
         curr_game_round = self.game.game_round
-        legal_actions = curr_game_round.point_round.current_player.get_legal_actions(curr_game_round.trump_suit, curr_game_round.point_round.suit_in_play, game_round.level)
-        if legal_actions:
-
-        raise NotImplementedError
+        legal_actions = curr_game_round.point_round.current_player.get_legal_actions(curr_game_round.trump_suit, curr_game_round.point_round.suit_in_play, curr_game_round.level)
+        return [self.card_to_action().index(action) for action in legal_actions]
 
 
     def extract_obs(self, state):
@@ -76,7 +73,7 @@ class ShengJiEnv(Env):
             (string): The action that will be passed to the game engine.
 
         '''
-        raise NotImplementedError
+        return self.card_to_action[action_id]
 
 
     def _get_legal_actions(self):
