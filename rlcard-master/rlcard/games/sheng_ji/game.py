@@ -19,6 +19,7 @@ class ShengJiGame:
             if i % 2 == 0:
                 newPlayer.set_is_dealer(True)
         self.card_dealer = ShengJiCardDealer(self.players)
+        self.card_dealer.deal_cards(self.players)
         self.next_round_level = Level.TWO
         self.dealer = 0
         self.trump_suit = 'S'
@@ -26,6 +27,7 @@ class ShengJiGame:
         self.game_round = ShengJiGameRound(self.players, self.next_round_level, self.trump_suit, self.dealer)
         self.judger = ShengJiJudger(42)
         self.is_over = False
+        return self.get_state(0), 0
 
     def step(self, action):
         self.game_round.proceed_round(action)
@@ -68,6 +70,12 @@ class ShengJiGame:
             else:
                 payoffs[i] = -1
         return payoffs
+
+    def get_num_players(self):
+        return 4
+
+    def get_num_actions(self):
+        return 54
 
 
 

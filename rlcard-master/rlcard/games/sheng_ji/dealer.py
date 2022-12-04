@@ -14,7 +14,8 @@ class ShengJiCardDealer:
             1. deck with 54 cards including black joker and red joker
         '''
         self.np_random = np_random
-        self.deck = init_54_deck().extend(init_54_deck())
+        self.deck = init_54_deck()
+        self.deck.extend(init_54_deck())
 
     def shuffle(self):
         ''' Randomly shuffle the deck
