@@ -1,6 +1,7 @@
 
 from .round_point import ShengJiPointRound
 from .judger import ShengJiJudger
+from .dealer import ShengJiCardDealer
 
 class ShengJiGameRound():
 
@@ -11,8 +12,10 @@ class ShengJiGameRound():
         self.trump_suit = trump_suit
         self.starting_player = starting_player
         self.total_offensive_points = 0
-        self.cards_left_to_play = 104
+        self.cards_left_to_play = 108
         self.is_over = False
+        self.card_dealer = ShengJiCardDealer(self.players)
+        self.card_dealer.deal_cards(self.players)
         # TODO random seed?
         self.judger = ShengJiJudger(42)
 
@@ -21,7 +24,8 @@ class ShengJiGameRound():
         self.cards_left_to_play -= 1
         # checking if the point round ends after this play
         if self.point_round.is_over():
-            winning_player = self.point_round.find_winner()
+            winning_player = self.judger.find_point_round_winner(self.point_round.cards_played, self.starting_player,
+                                                                 self.trump_suit, self.level)
             # is the winning player an offensive player?
             if not self.players[winning_player].is_dealer:
                 self.total_offensive_points += self.point_round.get_points()

@@ -174,7 +174,7 @@ class Env(object):
         Returns:
             (boolean): True if current game is over
         '''
-        return self.game.is_over
+        return self.game.is_over()
 
     def get_player_id(self):
         ''' Get the current player id

@@ -9,7 +9,7 @@ class ShengJiJudger:
 
     #self, players, points, teams
     def judge_game(self, players):
-        return [p for p in players if p.level > 13]
+        return [p.player_index for p in players if p.level > 13]
 
     def find_point_round_winner(self, cards_played, starting_player, trump_suit, current_level):
         winner_index = starting_player
@@ -21,7 +21,7 @@ class ShengJiJudger:
             starting_suit = trump_suit
 
         for i in range(4):
-            curr_player = starting_player + i % 4
+            curr_player = (starting_player + i) % 4
             card = cards_played[curr_player]
             card_value = self.rank2number[card.suit] if card.suit == 'BJ' or card.suit == 'RJ' else self.rank2number[card.rank]
             # if highest card and current card both starting suit -> compare rank
@@ -50,7 +50,7 @@ class ShengJiJudger:
     def find_game_round_winners(self, players, total_offensive_points):
         winners = []
         # if offense won
-        if self.total_offensive_points >= 40:
+        if total_offensive_points >= 40:
             levels = 2 if total_offensive_points >= 120 else 1
             for p in players:
                 if not p.is_dealer:

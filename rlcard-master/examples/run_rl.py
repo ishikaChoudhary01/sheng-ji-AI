@@ -58,6 +58,7 @@ def train(args):
     # Start training
     with Logger(args.log_dir) as logger:
         for episode in range(args.num_episodes):
+            print("hi")
 
             if args.algorithm == 'nfsp':
                 agents[0].sample_episode_policy()
