@@ -28,12 +28,14 @@ class ShengJiGame:
         self.game_round = ShengJiGameRound(self.players, self.next_round_level, self.trump_suit, self.dealer)
         self.judger = ShengJiJudger(42)
         self.game_round_winners = None
+        self.payoffs = np.zeros(4)
         return self.get_state(0), 0
 
     def step(self, action):
         self.game_round.proceed_round(action)
         if self.game_round.is_over:
             self.game_round_winners = self.judger.find_game_round_winners(self.players, self.game_round.total_offensive_points)
+            self.update_payoffs()
             self.next_round_level = self.players[self.game_round_winners[0]].level # update next game round level using level of winners
             if self.is_over():
                 self.winner_ids = self.judger.judge_game(self.players)
@@ -43,6 +45,15 @@ class ShengJiGame:
         next_player = self.game_round.get_next_player()
         next_state = self.get_state(next_player)
         return next_state, next_player
+
+    def update_payoffs(self):
+        payoffs = self.game_round.get_payoffs()
+        for i in range(4):
+            if i in self.game_round_winners:
+                payoffs[i] += 1
+            else:
+                payoffs[i] -= 1
+        self.payoffs = self.payoffs + payoffs
 
 
     def get_state(self, player_id):
@@ -64,12 +75,7 @@ class ShengJiGame:
 
     def get_payoffs(self):
         # getting point round payoffs from game round
-        payoffs = self.game_round.get_payoffs()
-        for i in range(4):
-            if i in self.game_round_winners:
-                payoffs[i] += 1
-            else:
-                payoffs[i] -= 1
+        return self.payoffs
             # if not self.players[i].is_dealer and i in self.game_round_winners:
             #     payoffs[i] += 2 if self.game_round.total_offensive_points >= 120 else 1
             # elif i in self.game_round_winners:
