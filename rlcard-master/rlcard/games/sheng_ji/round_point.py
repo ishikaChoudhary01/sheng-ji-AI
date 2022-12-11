@@ -1,3 +1,5 @@
+import numpy as np
+
 from .judger import ShengJiJudger
 
 # Represents one round where each player plays one card
@@ -48,5 +50,13 @@ class ShengJiPointRound():
 
     def get_state(self):
         return self.cards_played
+
+    def get_payoffs(self):
+        payoffs = np.zeros(4)
+        payoffs = [-1 for payoff in payoffs]
+        payoffs[self.hand_winner] = 1
+        return payoffs
+
+
 
 

@@ -9,7 +9,7 @@ class ShengJiJudger:
 
     #self, players, points, teams
     def judge_game(self, players):
-        return [p.player_index for p in players if p.level > 13]
+        return [p.player_index for p in players if p.level > 3]
 
     def find_point_round_winner(self, cards_played, starting_player, trump_suit, current_level):
         winner_index = starting_player
@@ -55,7 +55,7 @@ class ShengJiJudger:
             for p in players:
                 if not p.is_dealer:
                     p.level_up(levels)
-                    winners.append(p)
+                    winners.append(p.player_index)
                 p.switch_role()
         # if dealers won
         else:
@@ -63,7 +63,7 @@ class ShengJiJudger:
             for p in players:
                 if p.is_dealer:
                     p.level_up(levels)
-                    winners.append(p)
+                    winners.append(p.player_index)
 
         return winners
 
